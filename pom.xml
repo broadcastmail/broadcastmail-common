@@ -48,6 +48,13 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/broadcastmail/broadcastmail-common</url>
+        </repository>
+    </distributionManagement>
 </project>

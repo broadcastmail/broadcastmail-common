@@ -15,16 +15,15 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class  OutboxEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     @Column(name = "id", nullable = false)
     private UUID id;
 
     @NotNull
     @Column(name = "campaign_recipient_id", nullable = false)
-    @Getter
     private UUID campaignRecipientId;
 
     @NotNull
@@ -37,7 +36,6 @@ public class  OutboxEntry {
     @ColumnDefault("0")
     @Column(name = "attempts", nullable = false)
     @Setter
-    @Getter
     private Integer attempts;
 
     @NotNull

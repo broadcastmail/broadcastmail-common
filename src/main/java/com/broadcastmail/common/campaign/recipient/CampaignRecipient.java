@@ -40,6 +40,7 @@ public class CampaignRecipient {
     @NotNull
     @Column(name = "status", nullable = false)
     @Setter
+    @Getter
     @Convert(converter = RecipientStatus.PersistenceConverter.class)
     private RecipientStatus status;
 
@@ -50,10 +51,12 @@ public class CampaignRecipient {
 
     @Column(name = "resend_message_id")
     @Setter
+    @Getter
     private String resendMessageId;
 
     @Column(name = "failed_reason")
     @Setter
+    @Getter
     private String failedReason;
 
     @Column(name = "sent_at")

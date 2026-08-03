@@ -45,12 +45,10 @@ public class EmailProvider {
     @Column(name = "from_name")
     private String fromName;
 
-    @NotNull
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    @NotNull
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
