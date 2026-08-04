@@ -45,6 +45,14 @@ public class EmailProvider {
     @Column(name = "from_name")
     private String fromName;
 
+    @Column(name = "encrypted_webhook_secret")
+    @Getter
+    private String encryptedWebhookSecret;
+
+    @Column(name = "resend_webhook_id")
+    @Getter
+    private String resendWebhookId;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
