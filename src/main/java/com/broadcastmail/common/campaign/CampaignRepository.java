@@ -22,4 +22,19 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     @Query(value = "DELETE FROM campaigns WHERE sent_at < :cutoff AND account_id IN (SELECT id FROM accounts WHERE plan = :plan)", nativeQuery = true)
     void deleteByPlanAndSentAtBefore(@Param("plan") String plan, @Param("cutoff") OffsetDateTime cutoff);
 
+    @Modifying
+    @Query(value = "UPDATE campaigns SET delivered_count = delivered_count + 1 WHERE id = :id", nativeQuery = true)
+    void incrementDeliveredCount(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "UPDATE campaigns SET opened_count = opened_count + 1 WHERE id = :id", nativeQuery = true)
+    void incrementOpenedCount(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "UPDATE campaigns SET bounced_count = bounced_count + 1 WHERE id = :id", nativeQuery = true)
+    void incrementBouncedCount(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "UPDATE campaigns SET failed_count = failed_count + 1 WHERE id = :id", nativeQuery = true)
+    void incrementFailedCount(@Param("id") UUID id);
 }

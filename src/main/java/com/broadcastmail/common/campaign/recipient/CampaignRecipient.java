@@ -15,6 +15,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class CampaignRecipient {
 
     @Id
@@ -39,7 +40,6 @@ public class CampaignRecipient {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    @Setter
     @Getter
     @Convert(converter = RecipientStatus.PersistenceConverter.class)
     private RecipientStatus status;
