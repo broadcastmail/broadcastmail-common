@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,5 +51,13 @@ public interface CampaignRecipientRepository extends JpaRepository<CampaignRecip
     @Query(value = "UPDATE campaign_recipients SET status = 'unsubscribed' WHERE id = :id", nativeQuery = true)
     void markUnsubscribed(@Param("id") UUID id);
 
+    @Query(value = """
+        SELECT COUNT(DISTINCT external_user_id)
+        FROM campaign_recipients cr
+        JOIN campaigns c ON c.id = cr.campaign_id
+        WHERE c.account_id = :accountId
+        AND cr.created_at >= :since
+        """, nativeQuery = true)
+    long countUniqueRecipientsSince(@Param("accountId") UUID accountId, @Param("since") OffsetDateTime since);
     Optional<CampaignRecipient> findByResendMessageId(String resendMessageId);
 }
