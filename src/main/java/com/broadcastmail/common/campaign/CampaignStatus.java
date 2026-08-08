@@ -4,7 +4,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 public enum CampaignStatus {
-    DRAFT, SENDING, SENT, PARTIALLY_FAILED, FAILED;
+    DRAFT, RESOLVING,SENDING, SENT, PARTIALLY_FAILED, FAILED;
 
     @Converter(autoApply = true)
     public static class PersistenceConverter implements AttributeConverter<CampaignStatus, String> {

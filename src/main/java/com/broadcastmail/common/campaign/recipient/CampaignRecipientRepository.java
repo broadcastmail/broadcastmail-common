@@ -8,19 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CampaignRecipientRepository extends JpaRepository<CampaignRecipient, UUID> {
     Page<CampaignRecipient> findByCampaignId(UUID campaignId, Pageable pageable);
-
-    Optional<CampaignRecipient> findByResendMessageId(UUID resendMessageId);
-    long countByCampaignIdAndStatus(UUID campaignId, RecipientStatus status);
     long countByCampaignId(UUID campaignId);
     Page<CampaignRecipient> findByCampaignIdAndStatus(UUID campaignId, RecipientStatus status, Pageable pageable);
-    List<CampaignRecipient> findByCampaignIdAndStatus(UUID campaignId, RecipientStatus status);
-
     @Query(value = """
             SELECT
                 COUNT(*) FILTER (WHERE status = 'queued') AS queued,
@@ -52,12 +46,27 @@ public interface CampaignRecipientRepository extends JpaRepository<CampaignRecip
     void markUnsubscribed(@Param("id") UUID id);
 
     @Query(value = """
-        SELECT COUNT(DISTINCT external_user_id)
-        FROM campaign_recipients cr
-        JOIN campaigns c ON c.id = cr.campaign_id
-        WHERE c.account_id = :accountId
-        AND cr.created_at >= :since
-        """, nativeQuery = true)
-    long countUniqueRecipientsSince(@Param("accountId") UUID accountId, @Param("since") OffsetDateTime since);
+    SELECT COUNT(DISTINCT cr.email)
+    FROM campaign_recipients cr
+    JOIN campaigns c ON cr.campaign_id = c.id
+    WHERE c.account_id = :accountId
+    AND c.created_at >= :since
+    """, nativeQuery = true)
+    long countUniqueRecipientsSince(
+            @Param("accountId") UUID accountId,
+            @Param("since") OffsetDateTime since
+    );
     Optional<CampaignRecipient> findByResendMessageId(String resendMessageId);
+
+    @Modifying
+    @Query(value = """
+    DELETE FROM campaign_recipients
+    WHERE id IN (
+        SELECT id FROM campaign_recipients
+        WHERE campaign_id = :campaignId
+        AND status = 'failed'
+        LIMIT :batchSize
+    )
+    """, nativeQuery = true)
+    int deleteFailedBatch(@Param("campaignId") UUID campaignId, @Param("batchSize") int batchSize);
 }
