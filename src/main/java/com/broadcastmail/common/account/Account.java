@@ -33,6 +33,7 @@ public class Account {
     private String apiKeyHash;
 
     @Getter
+    @Setter
     @Column(name = "plan", nullable = false)
     private String plan;
 
@@ -41,15 +42,6 @@ public class Account {
 
     @Column(name = "stripe_customer_id")
     private String stripeCustomerId;
-
-    @Setter
-    @Getter
-    @Column(name = "unique_recipients_this_period", nullable = false)
-    private Integer uniqueRecipientsThisPeriod;
-
-    @Setter
-    @Column(name = "period_reset_at", nullable = false)
-    private OffsetDateTime periodResetAt;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

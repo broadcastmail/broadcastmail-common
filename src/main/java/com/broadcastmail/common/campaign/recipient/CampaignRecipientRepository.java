@@ -50,7 +50,7 @@ public interface CampaignRecipientRepository extends JpaRepository<CampaignRecip
     FROM campaign_recipients cr
     JOIN campaigns c ON cr.campaign_id = c.id
     WHERE c.account_id = :accountId
-    AND c.created_at >= :since
+    AND cr.created_at >= :since
     """, nativeQuery = true)
     long countUniqueRecipientsSince(
             @Param("accountId") UUID accountId,

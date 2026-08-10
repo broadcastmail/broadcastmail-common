@@ -21,7 +21,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findAllByStatus(CampaignStatus status);
 
     @Modifying
-    @Query(value = "DELETE FROM campaigns WHERE sent_at < :cutoff AND account_id IN (SELECT id FROM accounts WHERE plan = :plan)", nativeQuery = true)
+    @Query(value = "DELETE FROM campaigns WHERE sent_at < :cutoff AND account_id IN (SELECT id FROM accounts WHERE plan = :plan) AND status = 'sent'", nativeQuery = true)
     void deleteByPlanAndSentAtBefore(@Param("plan") String plan, @Param("cutoff") OffsetDateTime cutoff);
 
     @Modifying
