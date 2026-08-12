@@ -11,7 +11,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByApiKeyHash(String apiKeyHash);
     boolean existsByEmail(String email);
     Optional<Account> findByEmail(String email);
-
+    Optional<Account> findByStripeCustomerId(String stripeCustomerId);
     @Modifying
     @Query(value = "UPDATE accounts SET unique_recipients_this_period = 0, period_reset_at = now() + interval '30 days' WHERE period_reset_at <= now()", nativeQuery = true)
     void resetExpiredPeriods();

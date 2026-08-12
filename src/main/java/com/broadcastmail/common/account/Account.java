@@ -40,6 +40,8 @@ public class Account {
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;
 
+    @Getter
+    @Setter
     @Column(name = "stripe_customer_id")
     private String stripeCustomerId;
 
