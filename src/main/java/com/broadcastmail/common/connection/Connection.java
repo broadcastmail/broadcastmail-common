@@ -2,10 +2,7 @@ package com.broadcastmail.common.connection;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -73,6 +70,7 @@ public class Connection {
     private String userIdColumn;
 
     @Column(name = "estimated_user_count")
+    @Setter
     private Integer estimatedUserCount;
 
     @CreationTimestamp

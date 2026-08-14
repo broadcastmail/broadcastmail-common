@@ -30,6 +30,7 @@ public class Account {
 
     @Column(name = "api_key_hash", nullable = false)
     @Getter
+    @Setter
     private String apiKeyHash;
 
     @Getter
