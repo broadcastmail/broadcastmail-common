@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,6 +58,40 @@ public interface CampaignRecipientRepository extends JpaRepository<CampaignRecip
             @Param("since") OffsetDateTime since
     );
     Optional<CampaignRecipient> findByResendMessageId(String resendMessageId);
+
+
+    @Modifying
+    @Query(value = """
+    INSERT INTO campaign_recipients
+        (id, campaign_id, external_user_id, email, status, idempotency_key, created_at)
+    SELECT
+        gen_random_uuid(),
+        :campaignId,
+        r.user_id,
+        r.email,
+        'queued',
+        CAST(:campaignId AS text) || ':' || r.user_id,
+        now()
+    FROM unnest(CAST(:userIds AS text[]), CAST(:emails AS text[])) AS r(user_id, email)
+    ON CONFLICT (campaign_id, external_user_id) DO NOTHING
+    """, nativeQuery = true)
+    void upsertRecipients(
+            @Param("campaignId") UUID campaignId,
+            @Param("userIds") String[] userIds,
+            @Param("emails") String[] emails
+    );
+
+    @Query(value = """
+    SELECT id FROM campaign_recipients
+    WHERE campaign_id = :campaignId
+    AND external_user_id IN (:userIds)
+    AND created_at >= :insertedAfter
+    """, nativeQuery = true)
+    List<UUID> findInsertedAfter(
+            @Param("campaignId") UUID campaignId,
+            @Param("userIds") List<String> userIds,
+            @Param("insertedAfter") OffsetDateTime insertedAfter
+    );
 
     @Modifying
     @Query(value = """

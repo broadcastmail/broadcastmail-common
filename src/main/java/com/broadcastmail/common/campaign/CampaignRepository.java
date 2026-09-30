@@ -19,10 +19,15 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findByAccountId(UUID accountId);
     long countByIdAndStatus(UUID accountId, RecipientStatus status);
     List<Campaign> findAllByStatus(CampaignStatus status);
+    List<Campaign> findByAccountIdAndStatusIn(UUID accountId, List<CampaignStatus> status);
 
     @Modifying
     @Query(value = "DELETE FROM campaigns WHERE sent_at < :cutoff AND account_id IN (SELECT id FROM accounts WHERE plan = :plan) AND status = 'sent'", nativeQuery = true)
     void deleteByPlanAndSentAtBefore(@Param("plan") String plan, @Param("cutoff") OffsetDateTime cutoff);
+
+    @Modifying
+    @Query(value = "UPDATE campaigns SET sent_count = sent_count + 1 WHERE id = :campaignId", nativeQuery = true)
+    void incrementSentCount(@Param("campaignId") UUID campaignId);
 
     @Modifying
     @Query(value = "UPDATE campaigns SET delivered_count = delivered_count + 1 WHERE id = :id", nativeQuery = true)
@@ -39,4 +44,15 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     @Modifying
     @Query(value = "UPDATE campaigns SET failed_count = failed_count + 1 WHERE id = :id", nativeQuery = true)
     void incrementFailedCount(@Param("id") UUID id);
+
+    @Query(value = """
+    SELECT 
+        COALESCE(SUM(delivered_count), 0) AS delivered,
+        COALESCE(SUM(recipient_count), 0) AS recipients
+    FROM campaigns
+    WHERE account_id = :accountId
+    AND status = 'sent'
+    AND sent_at >= :since
+    """, nativeQuery = true)
+    DeliveryStats sumDeliveryStatsSince(@Param("accountId") UUID accountId, @Param("since") OffsetDateTime since);
 }

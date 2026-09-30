@@ -4,10 +4,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class CampaignFilterSerializer {
+
+    private static final Set<String> JSON_METADATA_COLUMNS = Set.of("raw_user_meta_data", "raw_app_meta_data");
     public FilterQuery serialize(List<CampaignFilter> filters) {
         if (filters == null || filters.isEmpty()) {
             return new FilterQuery("", List.of());
@@ -38,6 +41,17 @@ public class CampaignFilterSerializer {
             case LT -> "<";
             case CONTAINS -> "ILIKE";
         };
-        return "\"" + filter.getColumnName() + "\" " + operator + " ?";
+        return switch (filter.getSource()) {
+            case PROFILE_TABLE, AUTH_METADATA -> "\"" + filter.getColumnName() + "\" " + operator + " ?";
+            case AUTH_METADATA_JSON -> {
+                if (!JSON_METADATA_COLUMNS.contains(filter.getColumnName())) {
+                    throw new IllegalArgumentException("Invalid metadata column: " + filter.getColumnName());
+                }
+                if (filter.getJsonKey() == null || !filter.getJsonKey().matches("[a-zA-Z_]\\w*")) {
+                    throw new IllegalArgumentException("Invalid metadata key: " + filter.getJsonKey());
+                }
+                yield "\"" + filter.getColumnName() + "\"->>'" + filter.getJsonKey() + "' " + operator + " ?";
+            }
+        };
     }
 }

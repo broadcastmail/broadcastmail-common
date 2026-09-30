@@ -31,6 +31,9 @@ public class Campaign {
     @Column(name = "connection_id", nullable = false)
     private UUID connectionId;
 
+    @Column(name = "retry_of_campaign_id")
+    private UUID retryOfCampaignId;
+
     @NotNull
     @Setter
     @Column(name = "name", nullable = false)
@@ -57,22 +60,27 @@ public class Campaign {
     private Integer recipientCount;
 
     @Builder.Default
+    @Setter
     @Column(name = "sent_count", nullable = false)
     private Integer sentCount = 0;
 
     @Builder.Default
+    @Setter
     @Column(name = "delivered_count", nullable = false)
     private Integer deliveredCount = 0;
 
     @Builder.Default
+    @Setter
     @Column(name = "opened_count", nullable = false)
     private Integer openedCount = 0;
 
     @Builder.Default
+    @Setter
     @Column(name = "bounced_count", nullable = false)
     private Integer bouncedCount = 0;
 
     @Builder.Default
+    @Setter
     @Column(name = "failed_count", nullable = false)
     private Integer failedCount = 0;
 

@@ -14,7 +14,7 @@ CREATE TABLE accounts (
                           unique_recipients_this_period   INT NOT NULL DEFAULT 0,
                           period_reset_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
                           created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-                          updated_at          TIMESTAMPTZ NOT NULL DEFAULT now()
+                          updated_at         TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- =====================
