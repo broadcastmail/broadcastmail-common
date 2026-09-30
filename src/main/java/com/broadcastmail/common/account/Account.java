@@ -1,5 +1,6 @@
 package com.broadcastmail.common.account;
 
+import com.broadcastmail.common.account.plan.Plan;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,7 +37,8 @@ public class Account {
     @Getter
     @Setter
     @Column(name = "plan", nullable = false)
-    private String plan;
+    @Enumerated(EnumType.STRING)
+    private Plan plan;
 
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;

@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@Setter
 public class Connection {
     @Getter
     @Id
@@ -48,29 +49,25 @@ public class Connection {
     @Getter
     private String encryptedCreds;
 
-    @NotNull
     @ColumnDefault("'public'")
     @Getter
-    @Column(name = "user_table_schema", nullable = false)
+    @Column(name = "user_table_schema", nullable = true)
     private String userTableSchema;
 
-    @NotNull
     @Getter
-    @Column(name = "user_table_name", nullable = false)
+    @Column(name = "user_table_name", nullable = true)
     private String userTableName;
 
-    @NotNull
-    @Column(name = "email_column", nullable = false)
+    @Column(name = "email_column", nullable = true)
     @Getter
     private String emailColumn;
 
-    @NotNull
-    @Column(name = "user_id_column", nullable = false)
+    @Column(name = "user_id_column", nullable = true)
     @Getter
     private String userIdColumn;
 
     @Column(name = "estimated_user_count")
-    @Setter
+    @Getter
     private Integer estimatedUserCount;
 
     @CreationTimestamp

@@ -47,6 +47,22 @@ public class CampaignFilter {
     @Column(name = "filter_order", nullable = false)
     private Integer filterOrder;
 
+    /**
+     * Which table/column a filter actually targets at query time. PROFILE_TABLE and
+     * AUTH_METADATA both filter on a plain column (the linked profile table vs.
+     * auth.users, via the auth.user_emails view); AUTH_METADATA_JSON filters a key
+     * inside a jsonb column (columnName names the jsonb column, jsonKey the key).
+     */
+    @NotNull
+    @Getter
+    @Column(name = "source", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FilterSource source;
+
+    @Getter
+    @Column(name = "json_key")
+    private String jsonKey;
+
     @NotNull
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
